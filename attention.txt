@@ -1,0 +1,38 @@
+*Question*: Implement an attention module, discuss your discovery/thinking during the
+implementation. Steps:
+
+1. (down)load VGG16 with weights pretrained on ImageNet (Keras VGG 16 function link [https://keras.io/api/applications/vgg/#vgg16-function]), we
+need to include the classification top as we want to classify images. [One alternative method:
+construct a model and load weights (link)[https://gist.github.com/baraldilorenzo/07d7802847aaad0a35d3]]. Output/Print the model by function "summary" [https://keras.io/api/models/model/#summary-method].
+
+Let's number/name the layers in VGG16 with this figure:
+
+Input > Conv1-1 > Conv1-2 > Pooling
+ > Conv2-1 > Conv2-2 > Pooling
+ > Conv3-1 > Conv3-2 > Conv3-3 > Pooling
+ > Conv4-1 > Conv4-2 > Conv4-3 > Pooling
+ > Conv4-1 > Conv4-2 > Conv4-3 > Pooling
+ > Conv5-1 > Conv5-2 > Conv5-3 > Pooling
+ > Dense > Dense > Dense > Output
+
+2. Select and implement _one_ of the attention modules (the STN, the SENet, or the CBAM)
+discussed in class (see Lectures 13 and 14).
+
+3. Insert the implemented module into multiple positions:
+between input and conv 1-1; between pooling and conv 2-1; between pooling and conv 3-
+1; between pooling and conv 4-1; between pooling and 5-1; between pooling and dense;
+
+4. Freeze the pretrained weights of VGG16 [optional: instead of freezing, we can choose to do the
+fine-tuning on the pretrained weights (see Lecture 15)], and only train the inserted modules with
+smaller dataset Imagenette [https://github.com/fastai/imagenette] (or a subset of it if you find the dataset is still too large).
+
+We should have two types of results in this experiment: (i) the comparison between the
+classification results/scores before and after the attention module at each position; and (ii) each
+output of the feature maps after attention modules, e.g., how did the attention module change the
+output of the pooling before conv 2-1? conv 3-1? conv 4-1?, etc.
+
+*Submission*: a word/PDF report containing the following sections.
+1. Runnable codes (70%)
+2. Show the required results with your arbitrarily selected input images from Imagenette (>=4)
+(15%)
+3. Discussion of thinking and discovery (15%)
