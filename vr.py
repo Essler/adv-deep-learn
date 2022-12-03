@@ -11,18 +11,14 @@ date_str = str(datetime.datetime.now().strftime("%Y%m%d-%H%M%S-%f"))  # Datetime
 import torch
 from torchvision import transforms
 
+# git clone https://github.com/WongKinYiu/yolov7.git
+# curl -L https://github.com/WongKinYiu/yolov7/releases/download/v0.1/yolov7-w6-pose.pt -o yolov7-w6-pose.pt
+
 # YOLOv7 modules
 from utils.datasets import letterbox  # Pad image
 from utils.general import non_max_suppression_kpt  # Run Non-Max Suppression algorithm to clean initial output for interpretation.
 from utils.plots import output_to_keypoint, plot_skeleton_kpts  # Add keypoints to an image once predicted.
 
-# import matplotlib  # vr.py:69: UserWarning: Matplotlib is currently using agg, which is a non-GUI backend, so cannot show the figure.
-# matplotlib.use('TkAgg')  # Blank and unresponsive plots in pop-out windows.
-# matplotlib.use('wxAgg')  # ModuleNotFoundError: No module named 'wx'
-# matplotlib.use('Qt5Agg')  # Blank and unresponsive plots in pop-out windows.
-# matplotlib.use('Qt5Agg')  # Blank and unresponsive plots in pop-out windows.
-
-# import matplotlib.pyplot as plt
 from matplotlib import pyplot as plt
 import cv2
 import numpy as np
@@ -36,7 +32,6 @@ def load_model():
 
     if torch.cuda.is_available():
         model.half().to(device)  # float16 instead of float32 for faster inference.
-        # model.cuda()
 
     return model
 
@@ -44,14 +39,13 @@ def load_model():
 def run_inference(url, model):
     image = cv2.imread(url)
     image = letterbox(image, 960, stride=64, auto=True)[0]
-    image = transforms.ToTensor()(image)  # TypeError: expected Tensor as element 0 in argument 0, but got numpy.ndarray
-    image = image.unsqueeze(0)  # RuntimeError: Given groups=1, weight of size [64, 12, 3, 3], expected input[1, 3, 1280, 480] to have 12 channels, but got 3 channels instead
+    image = transforms.ToTensor()(image)
+    image = image.unsqueeze(0)
 
-    # image = image.half().to("cuda:0")
     if torch.cuda.is_available():
         image = image.half().to("cuda:0")
 
-    output, _ = model(image)  # RuntimeError: Input type (torch.FloatTensor) and weight type (torch.cuda.HalfTensor) should be the same or input should be a MKLDNN tensor and weight is a dense tensor
+    output, _ = model(image)
     return output, image
 
 
@@ -76,9 +70,7 @@ def visualize_output(output, image, model, img_path):
     plt.figure(figsize=(12, 12))
     plt.axis('off')
     plt.imshow(nimg)
-    # img_dir = './images/skele'
     plt.savefig(f'{img_path}-{date_str}.png')
-    # plt.show()
 
 
 def run(img_path):
@@ -87,8 +79,8 @@ def run(img_path):
     visualize_output(output, image, model, img_path)
 
 
-# git clone https://github.com/WongKinYiu/yolov7.git
-# curl -L https://github.com/WongKinYiu/yolov7/releases/download/v0.1/yolov7-w6-pose.pt -o yolov7-w6-pose.pt
+for i in range(4, 5):
+    for j in range(5):
+        run('./images/skele/ego/'+str(i)+str(j)+'teaser_hejkLDN.jpg')
 
-# run('./images/skele/karate.jpg')  # Mondo Generator on Unsplash
-# run('./images/skele/basketball.jpg')  # Bryan Reyes on Unsplash
+print("DONE!")
